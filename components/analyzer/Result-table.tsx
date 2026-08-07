@@ -24,13 +24,15 @@ interface MissingCase {
 
 interface ResultTableProps {
   cases: MissingCase[];
-  reportFile?: string;
+  reportData?: string;
+  reportFilename?: string;
   analyzerTitle: string;
 }
 
 export default function ResultTable({
   cases,
-  reportFile,
+  reportData,
+  reportFilename,
   analyzerTitle,
 }: ResultTableProps) {
   const [search, setSearch] = useState("");
@@ -104,10 +106,34 @@ export default function ResultTable({
     document.body.removeChild(link);
   };
 
-  // Download the server-generated full Excel report
+  // Download the server-generated full Excel report from in-memory Base64 data
   const handleDownloadServerReport = () => {
-    if (!reportFile) return;
-    window.open(`/api/reports?file=${encodeURIComponent(reportFile)}`, "_blank");
+    if (!reportData) return;
+
+    try {
+      // Decode Base64 string to binary array
+      const byteCharacters = atob(reportData);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = reportFilename || `${analyzerTitle.toLowerCase().replace(/\s+/g, "_")}_report.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error("Failed to download Excel report:", e);
+      alert("Failed to download Excel report. Please export the filtered view instead.");
+    }
   };
 
   return (
@@ -136,7 +162,7 @@ export default function ResultTable({
             Export Filtered
           </Button>
 
-          {reportFile && (
+          {reportData && (
             <Button
               variant="default"
               onClick={handleDownloadServerReport}

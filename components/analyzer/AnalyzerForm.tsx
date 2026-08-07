@@ -36,7 +36,8 @@ export default function AnalyzerForm({
   const [matchedCount, setMatchedCount] = useState(0);
   const [missingCount, setMissingCount] = useState(0);
   const [missingCases, setMissingCases] = useState<any[]>([]);
-  const [reportFile, setReportFile] = useState<string | undefined>(undefined);
+  const [reportData, setReportData] = useState<string | undefined>(undefined);
+  const [reportFilename, setReportFilename] = useState<string | undefined>(undefined);
 
   // Auto-parsing state
   const [availableDates, setAvailableDates] = useState<string[]>([]);
@@ -140,7 +141,8 @@ export default function AnalyzerForm({
         setMatchedCount(data.matched);
         setMissingCount(data.missing);
         setMissingCases(data.missing_cases || []);
-        setReportFile(data.report_file);
+        setReportData(data.report_data);
+        setReportFilename(data.report_filename);
         setHasRun(true);
 
         showToast(
@@ -345,7 +347,8 @@ export default function AnalyzerForm({
             
             <ResultTable
               cases={missingCases}
-              reportFile={reportFile}
+              reportData={reportData}
+              reportFilename={reportFilename}
               analyzerTitle={title}
             />
           </div>
