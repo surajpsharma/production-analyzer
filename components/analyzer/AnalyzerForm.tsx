@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
 import UploadBox from "./Upload-box";
 import SummaryCards from "./Summary-card";
 import ResultTable from "./Result-table";
 import { Input } from "@/components/common/Input";
 import { Loader2, Play, AlertCircle, CheckCircle2, Info, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { parseBacklogMetadata, performAnalysis } from "@/lib/excelProcessor";
 
 interface AnalyzerFormProps {
   title: string;
@@ -69,12 +69,11 @@ export default function AnalyzerForm({
     }
 
     const parseBacklogFile = async () => {
-      const formData = new FormData();
-      formData.append("file", monthlyFile);
       try {
         setIsParsing(true);
-        const response = await axios.post("/api/parse-backlog", formData);
-        const data = response.data;
+        const arrayBuffer = await monthlyFile.arrayBuffer();
+        const data = parseBacklogMetadata(arrayBuffer);
+        
         if (data.success) {
           setAvailableDates(data.dates || []);
           setAvailableOperators(data.operators || []);
@@ -87,11 +86,12 @@ export default function AnalyzerForm({
             setPreparedBy(""); // Reset to empty to force explicit selection
           }
           showToast("Backlog parsed successfully! Select date and operator.", "info");
+        } else {
+          showToast((data as any).error || "Failed to parse backlog metadata.", "error");
         }
       } catch (err: any) {
         console.error("Metadata parsing error:", err);
-        const errMsg = err.response?.data?.message || err.response?.data?.error || "Failed to parse backlog metadata.";
-        showToast(errMsg, "error");
+        showToast(err.message || "Failed to parse backlog metadata.", "error");
         // Reset to manual inputs
         setAvailableDates([]);
         setAvailableOperators([]);
@@ -123,18 +123,21 @@ export default function AnalyzerForm({
       return;
     }
 
-    const formData = new FormData();
-    formData.append("monthly", monthlyFile);
-    formData.append("dashboard", dashboardFile);
-    formData.append("date", date);
-    formData.append("preparedBy", preparedBy.trim().toUpperCase());
-
     try {
       setLoading(true);
       setHasRun(false);
 
-      const response = await axios.post(apiEndpoint, formData);
-      const data = response.data;
+      const monthlyBuffer = await monthlyFile.arrayBuffer();
+      const dashboardBuffer = await dashboardFile.arrayBuffer();
+      const analysisType = apiEndpoint.endsWith("printing") ? "printing" : "shelling";
+
+      const data = performAnalysis(
+        monthlyBuffer,
+        dashboardBuffer,
+        date,
+        preparedBy,
+        analysisType
+      );
 
       if (data.success) {
         setTotalChecked(data.total_checked);
@@ -150,12 +153,11 @@ export default function AnalyzerForm({
           "success"
         );
       } else {
-        showToast(data.error || "Analysis failed on server.", "error");
+        showToast(data.error || "Analysis failed.", "error");
       }
     } catch (err: any) {
-      console.error(err);
-      const errMsg = err.response?.data?.message || err.response?.data?.error || "Failed to run analysis.";
-      showToast(errMsg, "error");
+      console.error("Analysis error:", err);
+      showToast(err.message || "Failed to run analysis.", "error");
     } finally {
       setLoading(false);
     }

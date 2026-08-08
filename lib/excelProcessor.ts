@@ -89,9 +89,9 @@ function getHarmonizedRow(row: any): HarmonizedCase {
   return harmonized;
 }
 
-// Parse monthly backlog from buffer
-function getBacklogRows(backlogBuffer: Buffer): HarmonizedCase[] {
-  const workbook = XLSX.read(backlogBuffer, { type: "buffer" });
+// Parse monthly backlog from buffer or array data
+function getBacklogRows(backlogBuffer: any): HarmonizedCase[] {
+  const workbook = XLSX.read(backlogBuffer, { type: "array" });
   const sheetNames = workbook.SheetNames;
   const compiledSheets = sheetNames.filter((s) => s.toLowerCase().includes("compiled"));
 
@@ -130,7 +130,7 @@ function getBacklogRows(backlogBuffer: Buffer): HarmonizedCase[] {
 }
 
 // Extract unique dates and operator names from backlog
-export function parseBacklogMetadata(backlogBuffer: Buffer) {
+export function parseBacklogMetadata(backlogBuffer: any) {
   const rows = getBacklogRows(backlogBuffer);
 
   const datesSet = new Set<string>();
@@ -153,8 +153,8 @@ export function parseBacklogMetadata(backlogBuffer: Buffer) {
 }
 
 // Get Set of UIDs from dashboard
-function getDashboardUIDs(dashboardBuffer: Buffer): Set<string> {
-  const workbook = XLSX.read(dashboardBuffer, { type: "buffer" });
+function getDashboardUIDs(dashboardBuffer: any): Set<string> {
+  const workbook = XLSX.read(dashboardBuffer, { type: "array" });
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json<any>(sheet);
 
@@ -203,8 +203,8 @@ export interface AnalysisResult {
 }
 
 export function performAnalysis(
-  backlogBuffer: Buffer,
-  dashboardBuffer: Buffer,
+  backlogBuffer: any,
+  dashboardBuffer: any,
   date: string,
   preparedBy: string,
   type: "printing" | "shelling"
@@ -286,9 +286,21 @@ export function performAnalysis(
       XLSX.utils.book_append_sheet(wb, ws, "Missing Cases");
 
       // Generate buffer in memory
-      const wopts: XLSX.WritingOptions = { bookType: "xlsx", type: "buffer" };
+      const wopts: XLSX.WritingOptions = { bookType: "xlsx", type: "array" };
       const outBuffer = XLSX.write(wb, wopts);
-      reportDataBase64 = outBuffer.toString("base64");
+      
+      // Node.js vs Browser base64 conversion
+      if (typeof Buffer !== "undefined") {
+        reportDataBase64 = Buffer.from(outBuffer).toString("base64");
+      } else {
+        let binary = "";
+        const bytes = new Uint8Array(outBuffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        reportDataBase64 = window.btoa(binary);
+      }
 
       const timestamp = new Date().toISOString().replace(/[-:T]/g, "").slice(0, 14);
       reportFilename = `${type}_missing_${targetOperator}_${standardSelectedDate}_${timestamp}.xlsx`;
