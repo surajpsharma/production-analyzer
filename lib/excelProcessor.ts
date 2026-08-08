@@ -247,10 +247,10 @@ export function performAnalysis(
       missingRows = filteredRows.filter((r) => dashboardUIDs.has(r.uid));
     } else {
       statusText = "Shelling Missing";
-      // Matched: completed, i.e. successfully present in Shelling Dashboard queue
-      matchedRows = filteredRows.filter((r) => dashboardUIDs.has(r.uid));
-      // Missing: pending, i.e. NOT present in Shelling Dashboard queue
-      missingRows = filteredRows.filter((r) => !dashboardUIDs.has(r.uid));
+      // Matched: completed, i.e. NOT present in shelling dashboard queue anymore
+      matchedRows = filteredRows.filter((r) => !dashboardUIDs.has(r.uid));
+      // Missing: pending, i.e. still present in shelling dashboard queue
+      missingRows = filteredRows.filter((r) => dashboardUIDs.has(r.uid));
     }
 
     // Sort missing rows by UID alphabetically
