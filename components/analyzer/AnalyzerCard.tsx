@@ -17,27 +17,27 @@ export default function AnalyzerCard({
   return (
     <Link
       href={href}
-      className="block rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+      className="group block rounded-3xl border border-[#f9e9e8] bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-[#e03c31]/10"
     >
-      <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-blue-100">
+      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#f9e9e8] transition-colors duration-300 group-hover:bg-[#e03c31]">
         {icon === "shelling" ? (
-          <ScanSearch className="h-7 w-7 text-blue-600" />
+          <ScanSearch className="h-8 w-8 text-[#e03c31] transition-colors duration-300 group-hover:text-white" />
         ) : (
-          <Printer className="h-7 w-7 text-blue-600" />
+          <Printer className="h-8 w-8 text-[#e03c31] transition-colors duration-300 group-hover:text-white" />
         )}
       </div>
 
-      <h2 className="text-2xl font-bold text-slate-900">
+      <h2 className="text-2xl font-bold text-slate-900 mb-3">
         {title}
       </h2>
 
-      <p className="mt-3 text-slate-600">
+      <p className="text-slate-500 leading-relaxed min-h-[3rem]">
         {description}
       </p>
 
-      <div className="mt-6 flex items-center gap-2 font-medium text-blue-600">
+      <div className="mt-8 flex items-center gap-2 font-semibold text-[#e03c31] transition-transform duration-300 group-hover:translate-x-1">
         Open Analyzer
-        <ArrowRight size={18} />
+        <ArrowRight size={20} />
       </div>
     </Link>
   );

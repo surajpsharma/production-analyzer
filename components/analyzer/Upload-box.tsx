@@ -89,9 +89,9 @@ export default function UploadBox({
         onDrop={handleDrop}
         onClick={onButtonClick}
         className={cn(
-          "relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 text-center cursor-pointer transition-all hover:bg-slate-50 hover:border-blue-500/50 group",
-          isDragActive && "border-blue-500 bg-blue-50/30 scale-[0.99]",
-          file && "border-blue-500 bg-blue-50/10"
+          "relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-6 text-center cursor-pointer transition-all hover:bg-slate-50 hover:border-[#e03c31]/50 group",
+          isDragActive && "border-[#e03c31] bg-[#f9e9e8]/30 scale-[0.99]",
+          file && "border-[#e03c31] bg-[#f9e9e8]/10"
         )}
       >
         <input
@@ -104,7 +104,7 @@ export default function UploadBox({
 
         {file ? (
           <div className="flex items-center gap-4 w-full px-2">
-            <div className="rounded-xl bg-blue-50 p-3 text-blue-600">
+            <div className="rounded-xl bg-[#f9e9e8] p-3 text-[#e03c31]">
               <FileSpreadsheet className="h-8 w-8" />
             </div>
             <div className="flex-1 text-left min-w-0">
@@ -126,13 +126,13 @@ export default function UploadBox({
         ) : (
           <>
             <div className="rounded-xl bg-white p-3 text-slate-400 shadow-sm transition-transform group-hover:scale-110 border border-slate-100">
-              <UploadCloud className="h-6 w-6 text-blue-500" />
+              <UploadCloud className="h-6 w-6 text-[#e03c31]" />
             </div>
             <p className="mt-3 text-sm font-medium text-slate-950">
               Drag & drop Excel or CSV file
             </p>
             <p className="mt-1 text-xs text-slate-500">
-              or <span className="text-blue-600 font-semibold underline group-hover:text-blue-700">browse files</span> from your device
+              or <span className="text-[#e03c31] font-semibold underline group-hover:text-[#c33329]">browse files</span> from your device
             </p>
           </>
         )}

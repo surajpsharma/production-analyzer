@@ -7,6 +7,25 @@ export interface HarmonizedCase {
   preparedBy: string;
   printingDone: string;
   machine: string;
+  buildNo: string;
+}
+
+// Wrapper to silence the "Bad uncompressed size" warnings from xlsx in Metabase files
+function readXlsxQuietly(buffer: any, options: any) {
+  const originalError = console.error;
+  let result;
+  try {
+    console.error = (...args: any[]) => {
+      if (args[0] && typeof args[0] === 'string' && args[0].includes('Bad uncompressed size')) {
+        return; // Ignore Metabase zip warnings
+      }
+      originalError.apply(console, args);
+    };
+    result = XLSX.read(buffer, options);
+  } finally {
+    console.error = originalError;
+  }
+  return result;
 }
 
 // Clean and normalize dates to YYYY-MM-DD
@@ -37,7 +56,17 @@ function normalizeDate(rawDate: any): string {
   // Parse as string
   try {
     const dateStr = String(rawDate).trim();
-    // Try standard JS Date parsing
+    
+    // Check for explicit DD-MM-YYYY, DD/MM/YYYY, or DD.MM.YYYY
+    const dmyMatch = dateStr.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/);
+    if (dmyMatch) {
+      const d = dmyMatch[1].padStart(2, "0");
+      const m = dmyMatch[2].padStart(2, "0");
+      const y = dmyMatch[3];
+      return `${y}-${m}-${d}`;
+    }
+
+    // Try standard JS Date parsing (handles YYYY-MM-DD, MM/DD/YYYY, etc)
     const parsed = new Date(dateStr);
     if (!isNaN(parsed.getTime())) {
       const y = parsed.getFullYear();
@@ -60,6 +89,7 @@ function getHarmonizedRow(row: any): HarmonizedCase {
     preparedBy: "",
     printingDone: "",
     machine: row["Machine"] || "",
+    buildNo: "",
   };
 
   for (const key of keys) {
@@ -83,6 +113,8 @@ function getHarmonizedRow(row: any): HarmonizedCase {
       if (!harmonized.machine) {
         harmonized.machine = String(val ?? "").trim().toUpperCase();
       }
+    } else if (keyLower.includes("build")) {
+      harmonized.buildNo = String(val ?? "").trim();
     }
   }
 
@@ -91,7 +123,7 @@ function getHarmonizedRow(row: any): HarmonizedCase {
 
 // Parse monthly backlog from buffer or array data
 function getBacklogRows(backlogBuffer: any): HarmonizedCase[] {
-  const workbook = XLSX.read(backlogBuffer, { type: "array" });
+  const workbook = readXlsxQuietly(backlogBuffer, { type: "array" });
   const sheetNames = workbook.SheetNames;
   const compiledSheets = sheetNames.filter((s) => s.toLowerCase().includes("compiled"));
 
@@ -154,7 +186,7 @@ export function parseBacklogMetadata(backlogBuffer: any) {
 
 // Get Set of UIDs from dashboard
 function getDashboardUIDs(dashboardBuffer: any): Set<string> {
-  const workbook = XLSX.read(dashboardBuffer, { type: "array" });
+  const workbook = readXlsxQuietly(dashboardBuffer, { type: "array" });
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json<any>(sheet);
 
@@ -260,6 +292,7 @@ export function performAnalysis(
       "UID number": r.uid,
       "SOF NO.": r.sofNo,
       "Patient Name": r.patientName,
+      "Build No": r.buildNo,
       "Prepared By": r.preparedBy,
       "Printing Done": r.printingDone,
       "Machine": r.machine,
@@ -275,6 +308,7 @@ export function performAnalysis(
         "UID Number": r.uid,
         "SOF No.": r.sofNo,
         "Patient Name": r.patientName,
+        "Build No": r.buildNo,
         "Prepared By": r.preparedBy,
         "Printing Done": r.printingDone,
         "Machine": r.machine,

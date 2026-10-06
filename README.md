@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# makeO toothsi Production Analyzer 🦷
 
-## Getting Started
+A fast, fully client-side Next.js web application designed to help production teams analyze and identify missing aligner cases across different stages of manufacturing (Shelling & Printing).
 
-First, run the development server:
+## Features ✨
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Lightning Fast**: Built with Next.js App Router and Turbopack.
+- **100% Client-Side Processing**: Excel files are parsed locally in your browser using the `xlsx` library—no server uploads, no privacy concerns, zero database overhead.
+- **Shelling Missing Analyzer**: Cross-references completed backlog UIDs against the Shelling Dashboard to find cases that were marked done but are missing.
+- **Printing Missing Analyzer**: Compares the monthly print backlog with the Printing Dashboard.
+- **Export to Excel**: Generates clean, ready-to-share Excel reports of missing cases instantly.
+- **Modern UI**: Styled beautifully with Tailwind CSS and sleek animations.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies Used 💻
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Next.js 15** (App Router)
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS**
+- **XLSX** (SheetJS)
+- **Lucide React**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Getting Started 🚀
 
-## Learn More
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/surajpsharma/production-analyzer.git
+   cd production-analyzer
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Run the development server**
+   ```bash
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the app.
 
-## Deploy on Vercel
+## Usage 🛠️
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Navigate to either **Shelling Missing** or **Printing Missing** from the homepage.
+2. Upload the **Monthly Backlog** `.xlsx` file.
+3. Upload the **Dashboard** `.xlsx` file.
+4. Set the **Date** and **Prepared By** filters.
+5. Click **Run Analysis**.
+6. View the summary and download the generated missing cases report!
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Author 👤
+
+**Suraj Sharma**
+- GitHub: [@surajpsharma](https://github.com/surajpsharma)
+- Instagram: [__suraj__sharma____](https://www.instagram.com/__suraj__sharma____)
+- Email: surajsharma030805@gmail.com

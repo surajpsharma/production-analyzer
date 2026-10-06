@@ -11,9 +11,9 @@ export default function Home() {
       <PageContainer>
         {/* Hero Section */}
         <div className="mb-16 text-center max-w-2xl mx-auto animate-fade-in mt-6">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3.5 py-1.5 text-sm font-semibold text-blue-600 ring-1 ring-inset ring-blue-600/10 mb-6">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-[#f9e9e8] px-3.5 py-1.5 text-sm font-bold text-[#e03c31] ring-1 ring-inset ring-[#e03c31]/20 mb-6">
             <Sparkles className="h-4 w-4 fill-current animate-pulse" />
-            <span>Toothsi Production Tools</span>
+            <span>makeO toothsi Production Tools</span>
           </div>
 
           <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
@@ -45,7 +45,7 @@ export default function Home() {
         {/* Workflow Overview Section */}
         <div className="mt-20 max-w-4xl mx-auto border border-slate-100 bg-white rounded-3xl p-8 sm:p-10 shadow-sm">
           <h3 className="text-lg font-bold text-slate-900 mb-8 flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-blue-600"></span>
+            <span className="h-2 w-2 rounded-full bg-[#e03c31]"></span>
             Analyzer Workflow
           </h3>
 
@@ -53,7 +53,7 @@ export default function Home() {
             {/* Step 1 */}
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 font-bold text-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f9e9e8] text-[#e03c31] font-bold text-sm">
                   01
                 </div>
                 <h4 className="text-sm font-bold text-slate-800">Upload Files</h4>
@@ -66,7 +66,7 @@ export default function Home() {
             {/* Step 2 */}
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 font-bold text-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f9e9e8] text-[#e03c31] font-bold text-sm">
                   02
                 </div>
                 <h4 className="text-sm font-bold text-slate-800">Define Scope</h4>
@@ -79,7 +79,7 @@ export default function Home() {
             {/* Step 3 */}
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 font-bold text-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f9e9e8] text-[#e03c31] font-bold text-sm">
                   03
                 </div>
                 <h4 className="text-sm font-bold text-slate-800">Compare UIDs</h4>
@@ -92,7 +92,7 @@ export default function Home() {
             {/* Step 4 */}
             <div className="flex flex-col">
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 font-bold text-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f9e9e8] text-[#e03c31] font-bold text-sm">
                   04
                 </div>
                 <h4 className="text-sm font-bold text-slate-800">Export Results</h4>

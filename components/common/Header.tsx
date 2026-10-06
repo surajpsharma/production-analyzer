@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { ScanSearch } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import Image from "next/image";
+
 export default function Header() {
   const pathname = usePathname();
 
@@ -18,8 +20,14 @@ export default function Header() {
     <header className="border-b bg-white shadow-sm sticky top-0 z-40 backdrop-blur-md bg-white/95">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-3 shrink-0">
-          <div className="rounded-lg bg-blue-600 p-2">
-            <ScanSearch className="h-6 w-6 text-white" />
+          <div className="flex items-center">
+            <Image
+              src="https://asset2.toothsi.in/makeo_logo_transparent_copy_4fbd0574d4.svg"
+              alt="makeO toothsi logo"
+              width={100}
+              height={30}
+              className="h-8 w-auto"
+            />
           </div>
 
           <div className="hidden sm:block">
@@ -40,10 +48,10 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-lg px-3 py-2 text-sm font-semibold transition-all hover:bg-slate-50",
+                  "rounded-full px-4 py-2 text-sm font-medium transition-all",
                   isActive
-                    ? "bg-blue-50 text-blue-600 font-bold"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-[#e03c31] text-white shadow-md shadow-[#e03c31]/25"
+                    : "text-slate-600 hover:bg-[#f9e9e8] hover:text-[#e03c31]"
                 )}
               >
                 {item.name}

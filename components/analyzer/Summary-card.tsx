@@ -28,7 +28,7 @@ export default function SummaryCards({
     {
       title: "Matched Cases",
       value: matched,
-      description: "Existing in Dashboard Excel",
+      description: "Successfully passed (not in Dashboard)",
       icon: CheckCircle2,
       color: "green",
       bgColor: "bg-emerald-50 text-emerald-600",
@@ -37,7 +37,7 @@ export default function SummaryCards({
     {
       title: "Missing Cases",
       value: missing,
-      description: "NOT existing in Dashboard Excel",
+      description: "Still pending in Dashboard (Forgot to Pass)",
       icon: AlertTriangle,
       color: "red",
       bgColor: "bg-rose-50 text-rose-600",

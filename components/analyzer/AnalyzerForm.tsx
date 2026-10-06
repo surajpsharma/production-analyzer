@@ -29,6 +29,7 @@ export default function AnalyzerForm({
   const [preparedBy, setPreparedBy] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0); // 0, 1, 2, 3
   const [hasRun, setHasRun] = useState(false);
   
   // Results states
@@ -126,10 +127,14 @@ export default function AnalyzerForm({
     try {
       setLoading(true);
       setHasRun(false);
+      setLoadingStep(1); // 1. Reading Excel Files...
 
       const monthlyBuffer = await monthlyFile.arrayBuffer();
       const dashboardBuffer = await dashboardFile.arrayBuffer();
       const analysisType = apiEndpoint.endsWith("printing") ? "printing" : "shelling";
+
+      await new Promise(res => setTimeout(res, 800)); // Artificial delay for UX
+      setLoadingStep(2); // 2. Comparing UIDs...
 
       const data = performAnalysis(
         monthlyBuffer,
@@ -138,6 +143,9 @@ export default function AnalyzerForm({
         preparedBy,
         analysisType
       );
+
+      await new Promise(res => setTimeout(res, 1000)); // Artificial delay for UX
+      setLoadingStep(3); // 3. Generating Report...
 
       if (data.success) {
         setTotalChecked(data.total_checked);
@@ -152,6 +160,8 @@ export default function AnalyzerForm({
           `Analysis complete! Found ${data.missing} missing case${data.missing === 1 ? "" : "s"}.`,
           "success"
         );
+
+
       } else {
         showToast(data.error || "Analysis failed.", "error");
       }
@@ -160,6 +170,7 @@ export default function AnalyzerForm({
       showToast(err.message || "Failed to run analysis.", "error");
     } finally {
       setLoading(false);
+      setLoadingStep(0);
     }
   };
 
@@ -172,12 +183,12 @@ export default function AnalyzerForm({
             "fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl px-4 py-3 shadow-lg border backdrop-blur-sm transition-all duration-300 transform translate-y-0",
             toast.type === "success" && "bg-emerald-50/95 border-emerald-200 text-emerald-950",
             toast.type === "error" && "bg-rose-50/95 border-rose-200 text-rose-950",
-            toast.type === "info" && "bg-blue-50/95 border-blue-200 text-blue-950"
+            toast.type === "info" && "bg-[#f9e9e8]/95 border-[#f5b8b5] text-[#6a1510]"
           )}
         >
           {toast.type === "success" && <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />}
           {toast.type === "error" && <AlertCircle className="h-5 w-5 text-rose-600 shrink-0" />}
-          {toast.type === "info" && <Info className="h-5 w-5 text-blue-600 shrink-0" />}
+          {toast.type === "info" && <Info className="h-5 w-5 text-[#e03c31] shrink-0" />}
           
           <span className="text-sm font-semibold pr-2">{toast.message}</span>
           
@@ -223,7 +234,7 @@ export default function AnalyzerForm({
                       Printing Done Date
                     </label>
                     <div className="flex h-11 w-full items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-500">
-                      <Loader2 className="h-4.5 w-4.5 animate-spin text-blue-500" />
+                      <Loader2 className="h-4.5 w-4.5 animate-spin text-[#e03c31]" />
                       Scanning backlog dates...
                     </div>
                   </div>
@@ -232,7 +243,7 @@ export default function AnalyzerForm({
                       Prepared By
                     </label>
                     <div className="flex h-11 w-full items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-500">
-                      <Loader2 className="h-4.5 w-4.5 animate-spin text-blue-500" />
+                      <Loader2 className="h-4.5 w-4.5 animate-spin text-[#e03c31]" />
                       Scanning backlog operators...
                     </div>
                   </div>
@@ -247,7 +258,7 @@ export default function AnalyzerForm({
                       <select
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
-                        className="flex h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"
+                        className="flex h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[#e03c31] focus:outline-none focus:ring-2 focus:ring-[#e03c31]/20 transition-all cursor-pointer"
                       >
                         <option value="">Select a date...</option>
                         {availableDates.map((d) => (
@@ -261,7 +272,7 @@ export default function AnalyzerForm({
                         type="date"
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
-                        className="flex h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                        className="flex h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[#e03c31] focus:outline-none focus:ring-2 focus:ring-[#e03c31]/20 transition-all"
                       />
                     )}
                   </div>
@@ -274,7 +285,7 @@ export default function AnalyzerForm({
                       <select
                         value={preparedBy}
                         onChange={(e) => setPreparedBy(e.target.value)}
-                        className="flex h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all cursor-pointer"
+                        className="flex h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[#e03c31] focus:outline-none focus:ring-2 focus:ring-[#e03c31]/20 transition-all cursor-pointer"
                       >
                         <option value="">Select operator...</option>
                         {availableOperators.map((op) => (
@@ -289,7 +300,7 @@ export default function AnalyzerForm({
                         placeholder="e.g. SURAJ"
                         value={preparedBy}
                         onChange={(e) => setPreparedBy(e.target.value.toUpperCase())}
-                        className="flex h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+                        className="flex h-11 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#e03c31] focus:outline-none focus:ring-2 focus:ring-[#e03c31]/20 transition-all"
                       />
                     )}
                   </div>
@@ -302,7 +313,7 @@ export default function AnalyzerForm({
               onClick={analyze}
               disabled={loading || isParsing}
               className={cn(
-                "relative flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 h-12 text-sm font-bold text-white shadow-md shadow-blue-500/10 transition-all hover:bg-blue-700 hover:shadow-lg disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none cursor-pointer",
+                "relative flex w-full items-center justify-center gap-2 rounded-xl bg-[#e03c31] h-12 text-sm font-bold text-white shadow-md shadow-[#e03c31]/10 transition-all hover:bg-[#c33329] hover:shadow-lg disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none cursor-pointer",
                 loading && "pl-8"
               )}
             >
@@ -322,8 +333,45 @@ export default function AnalyzerForm({
         </div>
       </div>
 
+      {/* Loading Skeleton Animation */}
+      {loading && (
+        <div className="mt-8 space-y-6 border-t border-slate-100 pt-8 animate-in fade-in duration-500">
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-slate-900">Processing Data</h3>
+            
+            {/* Step 1 */}
+            <div className={cn("flex items-center gap-3 transition-opacity duration-500", loadingStep >= 1 ? "opacity-100" : "opacity-30")}>
+              {loadingStep > 1 ? <CheckCircle2 className="h-5 w-5 text-emerald-500" /> : <Loader2 className="h-5 w-5 text-[#e03c31] animate-spin" />}
+              <span className="font-medium text-slate-700">Reading Excel Files...</span>
+            </div>
+
+            {/* Step 2 */}
+            <div className={cn("flex items-center gap-3 transition-opacity duration-500", loadingStep >= 2 ? "opacity-100" : "opacity-30")}>
+              {loadingStep > 2 ? <CheckCircle2 className="h-5 w-5 text-emerald-500" /> : (loadingStep === 2 ? <Loader2 className="h-5 w-5 text-[#e03c31] animate-spin" /> : <div className="h-5 w-5 rounded-full border-2 border-slate-200" />)}
+              <span className="font-medium text-slate-700">Comparing UIDs & Filtering Dates...</span>
+            </div>
+
+            {/* Step 3 */}
+            <div className={cn("flex items-center gap-3 transition-opacity duration-500", loadingStep >= 3 ? "opacity-100" : "opacity-30")}>
+              {loadingStep > 3 ? <CheckCircle2 className="h-5 w-5 text-emerald-500" /> : (loadingStep === 3 ? <Loader2 className="h-5 w-5 text-[#e03c31] animate-spin" /> : <div className="h-5 w-5 rounded-full border-2 border-slate-200" />)}
+              <span className="font-medium text-slate-700">Generating Missing Cases Report...</span>
+            </div>
+          </div>
+
+          {/* Skeleton UI for Table */}
+          <div className="mt-8 space-y-4">
+            <div className="h-8 w-1/3 bg-slate-100 rounded-lg animate-pulse" />
+            <div className="space-y-2">
+              <div className="h-12 w-full bg-slate-50/80 rounded-xl animate-pulse" />
+              <div className="h-12 w-full bg-slate-100 rounded-xl animate-pulse delay-75" />
+              <div className="h-12 w-full bg-slate-50/80 rounded-xl animate-pulse delay-150" />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Analysis Results Display */}
-      {hasRun && (
+      {hasRun && !loading && (
         <div className="space-y-8 transition-all duration-500 animate-slide-up">
           <div className="border-t border-slate-100 pt-8">
             <h2 className="text-xl font-bold text-slate-900 tracking-tight mb-4">
@@ -343,7 +391,7 @@ export default function AnalyzerForm({
                 Missing Case Records ({missingCount})
               </h2>
               <p className="mt-1 text-sm text-slate-500">
-                These UIDs exist in the filtered backlog but are not found in the Dashboard.
+                These UIDs were completed in your backlog but are STILL pending on the Dashboard (Forgot to Pass).
               </p>
             </div>
             

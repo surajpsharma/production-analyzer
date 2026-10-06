@@ -16,6 +16,7 @@ interface MissingCase {
   "UID number": string;
   "SOF NO.": string;
   "Patient Name": string;
+  "Build No": string;
   "Prepared By": string;
   "Printing Done": string;
   "Machine": string;
@@ -49,6 +50,7 @@ export default function ResultTable({
         item["UID number"].toLowerCase().includes(query) ||
         item["SOF NO."].toLowerCase().includes(query) ||
         item["Patient Name"].toLowerCase().includes(query) ||
+        (item["Build No"] || "").toLowerCase().includes(query) ||
         item["Prepared By"].toLowerCase().includes(query) ||
         item["Machine"].toLowerCase().includes(query) ||
         item["Status"].toLowerCase().includes(query)
@@ -72,11 +74,12 @@ export default function ResultTable({
 
   // Client-side CSV/Excel exporter (of currently filtered view)
   const handleExportCSV = () => {
-    const headers = ["UID Number", "SOF No.", "Patient Name", "Prepared By", "Printing Done", "Machine", "Status"];
+    const headers = ["UID Number", "SOF No.", "Patient Name", "Build No", "Prepared By", "Printing Done", "Machine", "Status"];
     const rows = filteredCases.map((c) => [
       c["UID number"],
       c["SOF NO."],
       c["Patient Name"],
+      c["Build No"] || "",
       c["Prepared By"],
       c["Printing Done"],
       c["Machine"],
@@ -147,7 +150,7 @@ export default function ResultTable({
             placeholder="Search by UID, SOF, or Patient Name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all"
+            className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#e03c31] focus:outline-none focus:ring-2 focus:ring-[#e03c31]/20 transition-all"
           />
         </div>
 
@@ -166,7 +169,7 @@ export default function ResultTable({
             <Button
               variant="default"
               onClick={handleDownloadServerReport}
-              className="flex items-center gap-2 h-11 px-4 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+              className="flex items-center gap-2 h-11 px-4 bg-[#e03c31] hover:bg-[#c33329] text-white cursor-pointer"
             >
               <Download className="h-4.5 w-4.5" />
               Download Full Excel
@@ -184,6 +187,7 @@ export default function ResultTable({
                 <TableHead className="w-[180px]">UID Number</TableHead>
                 <TableHead className="w-[120px]">SOF No.</TableHead>
                 <TableHead>Patient Name</TableHead>
+                <TableHead className="w-[100px]">Build No</TableHead>
                 <TableHead className="w-[120px]">Prepared By</TableHead>
                 <TableHead className="w-[120px]">Printing Done</TableHead>
                 <TableHead className="w-[120px]">Machine</TableHead>
@@ -203,13 +207,16 @@ export default function ResultTable({
                     <TableCell className="font-medium text-slate-800">
                       {item["Patient Name"]}
                     </TableCell>
+                    <TableCell className="font-medium text-slate-700">
+                      {item["Build No"]}
+                    </TableCell>
                     <TableCell className="text-slate-600">
                       {item["Prepared By"]}
                     </TableCell>
                     <TableCell className="text-slate-600">
                       {item["Printing Done"]}
                     </TableCell>
-                    <TableCell className="font-semibold text-blue-600">
+                    <TableCell className="font-semibold text-[#e03c31]">
                       {item["Machine"]}
                     </TableCell>
                     <TableCell className="text-right">
@@ -221,7 +228,7 @@ export default function ResultTable({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-40 text-center text-slate-500">
+                  <TableCell colSpan={8} className="h-40 text-center text-slate-500">
                     No missing cases found.
                   </TableCell>
                 </TableRow>
@@ -240,7 +247,7 @@ export default function ResultTable({
                 setRowsPerPage(Number(e.target.value));
                 setCurrentPage(1);
               }}
-              className="rounded border border-slate-200 bg-white px-2 py-1 text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="rounded border border-slate-200 bg-white px-2 py-1 text-slate-700 focus:outline-none focus:ring-1 focus:ring-[#e03c31]"
             >
               {[10, 25, 50, 100].map((size) => (
                 <option key={size} value={size}>
