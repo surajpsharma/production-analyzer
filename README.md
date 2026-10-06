@@ -1,5 +1,7 @@
 # makeO toothsi Production Analyzer 🦷
 
+**Live Demo:** [https://production-analyzer-kvj3.vercel.app/](https://production-analyzer-kvj3.vercel.app/)
+
 A fast, fully client-side Next.js web application designed to help production teams analyze and identify missing aligner cases across different stages of manufacturing (Shelling & Printing).
 
 ## Features ✨
